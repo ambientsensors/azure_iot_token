@@ -1,0 +1,16 @@
+{
+   "files": [
+      {
+         "flags": 0, 
+         "local_path": "resources/azure_ca_cert.pem", 
+         "name": "azure_ca_cert.pem", 
+         "platforms": null, 
+         "remote_path": "azure_ca_cert.pem", 
+         "type": 254, 
+         "version": "1.0.0.0"
+      }
+   ], 
+   "search_paths": [
+      ""
+   ]
+}
