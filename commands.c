@@ -225,8 +225,6 @@ ZOS_DEFINE_COMMAND(send_a_command)
     char send_string[10] = "";
     char cmd;
 
-    ZOS_LOG("Sandra, argc=%d, argv[0]=%s", argc, argv[0]);
-
     if (argv[0][0] == '-')
     {
         ZOS_LOG("usage: cmd <cmd> <board#> - 0=off, 1=on, 2=toggle, 3=sparkle, 4=dazzle");

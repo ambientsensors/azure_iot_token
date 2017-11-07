@@ -54,6 +54,7 @@
 /******************************************************
  *                      Macros
  ******************************************************/
+#define MAX_SIS 8
 
 /******************************************************
  *                    Constants
@@ -94,6 +95,7 @@ static mqtt_callback_t callback = mqtt_connection_event_cb;
 void zn_app_init(void)
 {
     zos_result_t result;
+    char systemindicator_string[MAX_SIS];
 
     ZOS_LOG("Calling the uart config now!!!!");
     setup_serial_port();
@@ -137,11 +139,22 @@ void zn_app_init(void)
     ZOS_LOG("  - Publish to topic                          : mqtt_publish <topic> <message>");
     ZOS_LOG("  - Unsubscribe from topic                    : mqtt_unsubscribe <topic>");
     ZOS_LOG("  - Disconnect from broker <mqtt.host>        : mqtt_disconnect");
+    ZOS_LOG("  - send cmd to mesh (\"cmd - -\" for usage)    : cmd");
 
     if(zn_load_app_settings("settings.ini") != ZOS_SUCCESS)
     {
         ZOS_LOG("Failed to load settings");
         return;
+    }
+
+    /// make sure that GPIO 23 wasn't set to wlan - if so, change it to -1 and save it
+    /// to NVRAM.  This is to prevent the OS from blinking the WLAN LED by using GPIO 23
+    /// (which we need to use for UART RTS).  If we get -1 back, we don't have to override.
+    zn_settings_get_print_str("system.indicator.gpio wlan", systemindicator_string, MAX_SIS);
+    if (strncmp(systemindicator_string, "-1", 2) != 0)
+    {
+        zn_settings_set_int32("system.indicator.gpio wlan", -1);
+        zn_settings_save(NULL);
     }
 
     zn_settings_get_str("system.uuid", (char *) settings->device, sizeof(settings->device));
